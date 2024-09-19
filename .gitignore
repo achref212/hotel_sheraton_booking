@@ -27,9 +27,13 @@ migrate_working_dir/
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
 /build/
+
+# Web related
+lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -41,3 +45,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+.firebase
+lib/_shared/common/config
+lib/generated
+config/prod
+config/stg
+ios/build
+trials-release.jks
+android/.gradle
+ios/.symlinks
+ios/Pods
+ios/Flutter
+local.properties

@@ -8,8 +8,13 @@ class ActivityService {
   Future<List<ActivityModel>> getAllActivities() async {
     final response = await http.get(Uri.parse('${Constants.uri}/activities'));
     if (response.statusCode == 200) {
-      Iterable jsonResponse = json.decode(response.body);
-      return ActivityModel.fromJsonList(jsonResponse.toList());
+      List<dynamic> body = json.decode(response.body);
+
+      // Map each room JSON to a RoomModel instance
+      List<ActivityModel> rooms =
+          body.map((dynamic item) => ActivityModel.fromJson(item)).toList();
+
+      return rooms;
     } else {
       throw Exception('Failed to load activities');
     }

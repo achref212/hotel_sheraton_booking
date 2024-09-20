@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_sheraton_booking/utils/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'providers/userprovider.dart';
@@ -9,7 +10,11 @@ import 'services/Auth.dart';
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => UserProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(
+            create: (_) => ThemeProvider()), // Add ThemeProvider
+      ],
       child: const MyApp(),
     ),
   );
@@ -41,6 +46,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Hotel Booking',
@@ -56,19 +63,18 @@ class _MyAppState extends State<MyApp> {
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
+      darkTheme: ThemeData.dark(), // Dark theme configuration
+      themeMode: themeProvider.themeMode, // Uses theme mode from ThemeProvider
       home: FutureBuilder<String?>(
         future: getTokenFromPrefs(),
         builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-                child: CircularProgressIndicator()); // Show loading indicator
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-            // User has a valid token, navigate to the main screen
             authService.getUserData(context);
             return const MainScreen();
           } else {
-            // No token found, user needs to log in or sign up
             return const SignupScreen();
           }
         },

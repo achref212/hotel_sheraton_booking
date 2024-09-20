@@ -68,8 +68,8 @@ class _MainScreenState extends State<MainScreen> {
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),
       PersistentBottomNavBarItem(
-        icon: Icon(CupertinoIcons.folder),
-        title: ("Files"),
+        icon: Icon(CupertinoIcons.flame),
+        title: ("Activity"),
         activeColorPrimary: GlobalColors.buttonColor,
         inactiveColorPrimary: CupertinoColors.systemGrey,
       ),

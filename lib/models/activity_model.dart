@@ -3,12 +3,13 @@ class ActivityModel {
   final String name;
   final String location;
   final String description;
-  final DateTime startTime;
-  final DateTime endTime;
+  final String startTime;
+  final String endTime;
   final int price;
   final int maxParticipants;
   final int currentParticipants;
-  final String imageUrl;
+  final String imagePath;
+  bool isFavorite; // New field to track favorite status
 
   ActivityModel({
     required this.id,
@@ -20,7 +21,8 @@ class ActivityModel {
     required this.price,
     required this.maxParticipants,
     required this.currentParticipants,
-    required this.imageUrl,
+    required this.imagePath,
+    this.isFavorite = false, // Default to not favorite
   });
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) {
@@ -29,12 +31,12 @@ class ActivityModel {
       name: json['name'],
       location: json['location'],
       description: json['description'],
-      startTime: DateTime.parse(json['startTime']),
-      endTime: DateTime.parse(json['endTime']),
+      startTime: json['startTime'],
+      endTime: json['endTime'],
       price: json['price'],
       maxParticipants: json['maxParticipants'],
       currentParticipants: json['currentParticipants'],
-      imageUrl: json['imageUrl'] ?? 'default_image.png',
+      imagePath: json['image_path'], // Use just the file name in Flutter
     );
   }
   Map<String, dynamic> toJson() {
@@ -42,13 +44,13 @@ class ActivityModel {
       '_id': id,
       'name': name,
       'description': description,
-      'startTime': startTime.toIso8601String(),
-      'endTime': endTime.toIso8601String(),
+      'startTime': startTime,
+      'endTime': endTime,
       'location': location,
       'price': price,
       'maxParticipants': maxParticipants,
       'currentParticipants': currentParticipants,
-      'images': imageUrl,
+      'images': imagePath,
     };
   }
 

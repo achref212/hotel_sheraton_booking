@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:hotel_sheraton_booking/screens/user/SettingsPage.dart';
 import 'package:hotel_sheraton_booking/services/Auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,69 +21,63 @@ class _ProfileScreen1State extends State<ProfileScreen1> {
     var user = Provider.of<UserProvider>(context, listen: false).user;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Profile',
-          style: TextStyle(color: Colors.black),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Profile Picture and Name
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: GlobalColors.primaryColor,
-                  backgroundImage: user.profilePicturePath.isNotEmpty
-                      ? NetworkImage(user.profilePicturePath)
-                      : const AssetImage('Assets/logo.png') as ImageProvider,
+            // Profile Picture
+            Center(
+              child: CircleAvatar(
+                radius: 60,
+                backgroundColor: GlobalColors.primaryColor,
+                backgroundImage: user.profilePicturePath.isNotEmpty
+                    ? NetworkImage(user.profilePicturePath)
+                    : const AssetImage('Assets/logo.png') as ImageProvider,
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // Name and Location
+            Text(
+              user.name + " " + user.lastname,
+              style: const TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 25),
+
+            // Edit Profile Button
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const UpdateProfileScreen()),
+                );
+              },
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  color: GlobalColors.buttonColor,
+                  borderRadius: BorderRadius.circular(30),
                 ),
-                const SizedBox(width: 20),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      user.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    GestureDetector(
-                      onTap: () {
-                        // Navigate to the Edit Profile screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const UpdateProfileScreen()),
-                        );
-                      },
-                      child: const Text(
-                        'View and edit profile',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 16,
-                          decoration:
-                              TextDecoration.underline, // Optional for emphasis
-                        ),
-                      ),
-                    ),
-                  ],
+                child: const Text(
+                  'View and Edit Profile',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ],
+              ),
             ),
             const SizedBox(height: 30),
-            // Change Password
+
+            // Menu Options
             _buildMenuOption(
               context,
               icon: Icons.lock,
@@ -92,17 +87,20 @@ class _ProfileScreen1State extends State<ProfileScreen1> {
               },
             ),
             const SizedBox(height: 10),
-            // Settings
             _buildMenuOption(
               context,
               icon: Icons.settings,
               text: 'Settings',
               onTap: () {
-                // Add Settings Screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => SettingsPage(),
+                  ),
+                );
               },
             ),
             const SizedBox(height: 10),
-            // Log Out
             _buildMenuOption(
               context,
               icon: Icons.logout,

@@ -15,13 +15,19 @@ class AuthService {
     required BuildContext context,
     required String email,
     required String name,
+    required String lastname, // Add lastname here
     required String password,
   }) async {
     try {
       Uri uri = Uri.parse('${Constants.uri}/signup');
       http.Response res = await http.post(
         uri,
-        body: jsonEncode({'email': email, 'password': password, 'name': name}),
+        body: jsonEncode({
+          'email': email,
+          'password': password,
+          'name': name,
+          'lastname': lastname,
+        }),
         headers: <String, String>{
           'Content-Type': "application/json; charset=UTF-8"
         },

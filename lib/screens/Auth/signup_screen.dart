@@ -17,6 +17,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController lastnameController = TextEditingController();
+
   final AuthService authService = AuthService();
 
   void signupUser() {
@@ -25,6 +27,7 @@ class _SignupScreenState extends State<SignupScreen> {
       email: emailController.text,
       password: passwordController.text,
       name: nameController.text,
+      lastname: lastnameController.text,
     );
   }
 
@@ -80,7 +83,7 @@ class _SignupScreenState extends State<SignupScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 48),
+              const SizedBox(height: 40),
               // Fullname TextField with Icon
               CustomTextField(
                 controller: nameController,
@@ -90,7 +93,16 @@ class _SignupScreenState extends State<SignupScreen> {
                 borderRadius: 8.0,
                 prefixIcon: Icons.person, // Fullname icon
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
+              CustomTextField(
+                controller: lastnameController,
+                hintText: 'Enter your last name',
+                borderColor: GlobalColors.primaryColor,
+                focusedBorderColor: GlobalColors.secondaryColor,
+                borderRadius: 8.0,
+                prefixIcon: Icons.person, // Lastname icon
+              ),
+              const SizedBox(height: 20),
               // Email TextField with Icon
               CustomTextField(
                 controller: emailController,
@@ -100,7 +112,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 borderRadius: 8.0,
                 prefixIcon: Icons.email, // Email icon
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               // Password TextField with Icon
               CustomTextField(
                 controller: passwordController,
@@ -111,7 +123,7 @@ class _SignupScreenState extends State<SignupScreen> {
                 borderRadius: 8.0,
                 prefixIcon: Icons.lock, // Password icon
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Center(
                 child: ElevatedButton(
                   onPressed: signupUser,
@@ -127,7 +139,7 @@ class _SignupScreenState extends State<SignupScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

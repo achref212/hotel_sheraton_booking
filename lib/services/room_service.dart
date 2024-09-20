@@ -7,9 +7,15 @@ class RoomService {
   // Fetch all rooms
   Future<List<RoomModel>> getAllRooms() async {
     final response = await http.get(Uri.parse('${Constants.uri}/rooms'));
+
     if (response.statusCode == 200) {
-      Iterable jsonResponse = json.decode(response.body);
-      return jsonResponse.map((room) => RoomModel.fromJson(room)).toList();
+      List<dynamic> body = json.decode(response.body);
+
+      // Map each room JSON to a RoomModel instance
+      List<RoomModel> rooms =
+          body.map((dynamic item) => RoomModel.fromJson(item)).toList();
+
+      return rooms;
     } else {
       throw Exception('Failed to load rooms');
     }

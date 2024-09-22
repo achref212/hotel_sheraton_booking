@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:hotel_sheraton_booking/screens/room/Booking/BookingPage.dart';
 import 'package:hotel_sheraton_booking/utils/constants.dart';
+import 'package:hotel_sheraton_booking/utils/globalColors.dart';
+import 'package:provider/provider.dart'; // To use the UserProvider
+import '../../../providers/userprovider.dart'; // Import your UserProvider
 import '../../models/room_model.dart';
-import '../../utils/globalColors.dart';
 
 class RoomDetailsScreen extends StatefulWidget {
   final RoomModel room;
@@ -33,6 +36,9 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Fetch the user ID from the provider
+    var userId = Provider.of<UserProvider>(context, listen: false).user.id;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -103,8 +109,6 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
             ),
             SizedBox(height: 15),
 
-            // Room Location
-
             // Room Details Section
             Text(
               'Details',
@@ -134,7 +138,17 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Add booking functionality
+                    // Navigate to the Booking Page and pass userId and roomId
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BookingPage(
+                          userId: userId, // Pass the userId from provider
+                          roomId:
+                              widget.room.id, // Pass the roomId from the room
+                        ),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     primary: GlobalColors.buttonColor,

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hotel_sheraton_booking/screens/room/Booking/BookingPage.dart';
 import 'package:hotel_sheraton_booking/utils/constants.dart';
 import 'package:hotel_sheraton_booking/utils/globalColors.dart';
-import 'package:provider/provider.dart'; // To use the UserProvider
-import '../../../providers/userprovider.dart'; // Import your UserProvider
+import 'package:provider/provider.dart';
+import '../../../providers/userprovider.dart';
 import '../../models/room_model.dart';
 
 class RoomDetailsScreen extends StatefulWidget {
@@ -57,7 +57,7 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,6 +124,35 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
             ),
             SizedBox(height: 20),
 
+            // Facilities Section
+            Text(
+              'Facilities',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 10),
+
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 3,
+              mainAxisSpacing: 10,
+              crossAxisSpacing: 10,
+              physics: NeverScrollableScrollPhysics(), // Prevent scrolling
+              children: [
+                _buildFacilityIcon(Icons.pool, 'Swimming Pool'),
+                _buildFacilityIcon(Icons.wifi, 'WiFi'),
+                _buildFacilityIcon(Icons.restaurant, 'Restaurant'),
+                _buildFacilityIcon(Icons.local_parking, 'Parking'),
+                _buildFacilityIcon(Icons.meeting_room, 'Meeting Room'),
+                _buildFacilityIcon(Icons.elevator, 'Elevator'),
+                _buildFacilityIcon(Icons.fitness_center, 'Fitness Center'),
+                _buildFacilityIcon(Icons.access_time, '24-hours Open'),
+              ],
+            ),
+            SizedBox(height: 20),
+
             // Room Price and Book Now Button
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -144,8 +173,9 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
                       MaterialPageRoute(
                         builder: (context) => BookingPage(
                           userId: userId, // Pass the userId from provider
-                          roomId:
-                              widget.room.id, // Pass the roomId from the room
+                          roomId: widget.room.id, roomPrice: widget.room.price,
+                          room: widget.room,
+                          // Pass the roomId from the room
                         ),
                       ),
                     );
@@ -167,6 +197,21 @@ class _RoomDetailsScreenState extends State<RoomDetailsScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  // Widget for building facility icon and text
+  Widget _buildFacilityIcon(IconData icon, String label) {
+    return Column(
+      children: [
+        Icon(icon, size: 30, color: Colors.green),
+        SizedBox(height: 5),
+        Text(
+          label,
+          style: TextStyle(fontSize: 12),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

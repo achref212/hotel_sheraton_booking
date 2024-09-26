@@ -1,104 +1,96 @@
 import 'package:flutter/material.dart';
-import 'package:hotel_sheraton_booking/models/room_model.dart';
-import 'package:hotel_sheraton_booking/screens/room/Booking/Payment.dart';
+import 'package:hotel_sheraton_booking/models/activity_model.dart';
+import 'package:hotel_sheraton_booking/screens/activity/Reservation/ReservationConfirmationPage.dart';
 import 'package:intl/intl.dart';
-import 'package:hotel_sheraton_booking/models/booking_model.dart';
-import 'package:hotel_sheraton_booking/services/booking_service.dart';
+import 'package:hotel_sheraton_booking/models/reservation_model.dart';
+import 'package:hotel_sheraton_booking/services/reservation_service.dart';
 
-class BookingPage extends StatefulWidget {
+class ReservationPage extends StatefulWidget {
   final String userId;
-  final String roomId;
-  final double roomPrice;
-  final RoomModel room;
+  final String activityId;
+  final int activityPrice;
+  final ActivityModel activity;
 
-  BookingPage({
+  ReservationPage({
     required this.userId,
-    required this.roomId,
-    required this.roomPrice,
-    required this.room,
+    required this.activityId,
+    required this.activityPrice,
+    required this.activity,
   });
 
   @override
-  _BookingPageState createState() => _BookingPageState();
+  _ReservationPageState createState() => _ReservationPageState();
 }
 
-class _BookingPageState extends State<BookingPage> {
-  final BookingService bookingService = BookingService();
-  DateTime? _checkInDate;
-  DateTime? _checkOutDate;
+class _ReservationPageState extends State<ReservationPage> {
+  final ReservationService reservationService = ReservationService();
+  DateTime? _reservationDate;
   int guests = 1;
-  String bookingStatus = "pending";
+  String reservationStatus = "pending";
   double totalPrice = 0;
-  int nights = 0; // Add nights variable to calculate number of nights
 
-  // Calculate total price
+  // Calculate total price based on guests and activity price
   void _calculateTotalPrice() {
-    if (_checkInDate != null && _checkOutDate != null) {
-      nights = _checkOutDate!.difference(_checkInDate!).inDays;
-      setState(() {
-        totalPrice = nights * widget.roomPrice * guests;
-      });
-    }
+    setState(() {
+      totalPrice = widget.activityPrice.toDouble() * guests;
+    });
   }
 
-  // Function to create booking
-  Future<void> _createBooking() async {
-    if (_checkInDate == null || _checkOutDate == null) {
+  // Function to create reservation
+  Future<void> _createReservation() async {
+    if (_reservationDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please select check-in and check-out dates.")),
+        SnackBar(content: Text("Please select a reservation date.")),
       );
       return;
     }
 
     try {
-      BookingModel booking = BookingModel(
+      ReservationModel reservation = ReservationModel(
         userId: widget.userId,
-        roomId: widget.roomId,
-        checkInDate: _checkInDate!,
-        checkOutDate: _checkOutDate!,
+        activityId: widget.activityId,
+        reservationDate: _reservationDate!,
         guests: guests,
-        status: bookingStatus,
+        status: reservationStatus,
       );
 
-      BookingModel newBooking = await bookingService.createBooking(booking);
-      // If booking is created successfully, navigate to PaymentPage
-      if (newBooking.id!.isNotEmpty) {
+      ReservationModel newReservation =
+          await reservationService.createReservation(reservation);
+
+      if (newReservation.id!.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Booking created successfully!")),
+          SnackBar(content: Text("Reservation created successfully!")),
         );
 
-        // Navigate to PaymentPage after booking is successful
+        // Navigate to ReservationConfirmationPage
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PaymentPage(
+            builder: (context) => ReservationConfirmationPage(
+              activityPrice: widget.activityPrice,
+              guests: guests,
               totalPrice: totalPrice,
-              room: widget.room,
-              nights: nights, // Pass the number of nights
-              checkInDate: _checkInDate!, // Pass check-in date
-              checkOutDate: _checkOutDate!, // Pass check-out date
-              guests: guests, // Pass the number of guests
+              activityName: widget.activity.name,
+              location: widget.activity.location,
+              reservationDate: _reservationDate!,
+              activityImg: widget.activity.imagePath,
             ),
           ),
         );
       } else {
-        // If the response does not contain a booking ID, show an error
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text("Failed to create booking. Please try again."),
+            content: Text("Failed to create reservation. Please try again."),
           ),
         );
       }
     } catch (e) {
-      // Show error if there's an exception
-      print("Error creating booking: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("An error occurred: $e")),
       );
     }
   }
 
-  // Widget to select check-in and check-out dates
   Widget _buildDateSelector(
       String label, DateTime? date, Function(DateTime) onSelectDate) {
     return GestureDetector(
@@ -134,7 +126,6 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
-  // Widget for selecting number of guests
   Widget _buildGuestSelector() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -172,17 +163,13 @@ class _BookingPageState extends State<BookingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Booking Details")),
+      appBar: AppBar(title: Text("Reservation Details")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Calendar Selector
-            _buildDateSelector("Check-in", _checkInDate,
-                (date) => setState(() => _checkInDate = date)),
-            SizedBox(height: 10),
-            _buildDateSelector("Check-out", _checkOutDate,
-                (date) => setState(() => _checkOutDate = date)),
+            _buildDateSelector("Reservation Date", _reservationDate,
+                (date) => setState(() => _reservationDate = date)),
             SizedBox(height: 20),
             _buildGuestSelector(),
             SizedBox(height: 20),
@@ -196,7 +183,7 @@ class _BookingPageState extends State<BookingPage> {
 
             // Continue Button
             ElevatedButton(
-              onPressed: _createBooking,
+              onPressed: _createReservation,
               child: Container(
                 width: double.infinity,
                 alignment: Alignment.center,

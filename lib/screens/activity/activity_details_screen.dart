@@ -21,22 +21,19 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize the favorite status based on the activity model
     isFavorite = widget.activity.isFavorite;
   }
 
-  // Function to toggle favorite status
   void _toggleFavorite() {
     setState(() {
       isFavorite = !isFavorite;
       widget.activity.isFavorite = isFavorite;
-      // You can also implement logic to save the favorite status in the database or backend.
+      // Add logic here to save favorite status if needed
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // Fetch the user ID from the provider
     var userId = Provider.of<UserProvider>(context, listen: false).user.id;
 
     return Scaffold(
@@ -62,7 +59,6 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Activity Image in a Card
             Center(
               child: Card(
                 shape: RoundedRectangleBorder(
@@ -77,16 +73,14 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                     width: double.infinity,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return Icon(Icons.error,
-                          size: 100, color: Colors.red); // Handle error
+                      return Icon(Icons.error, size: 100, color: Colors.red);
                     },
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 20), // Space between the image and text
+            SizedBox(height: 20),
 
-            // Activity Title and Favorite Icon
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -103,13 +97,12 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                     color: Colors.red,
                     size: 28,
                   ),
-                  onPressed: _toggleFavorite, // Toggle favorite on click
+                  onPressed: _toggleFavorite,
                 ),
               ],
             ),
             SizedBox(height: 15),
 
-            // Activity Details Section
             Text(
               'Details',
               style: TextStyle(
@@ -124,9 +117,8 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
             ),
             SizedBox(height: 20),
 
-            // Facilities Section
             Text(
-              'Facilities',
+              'Key Information',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -134,26 +126,20 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
             ),
             SizedBox(height: 10),
 
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 3,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              physics: NeverScrollableScrollPhysics(), // Prevent scrolling
+            // New key information section
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildFacilityIcon(Icons.pool, 'Swimming Pool'),
-                _buildFacilityIcon(Icons.wifi, 'WiFi'),
-                _buildFacilityIcon(Icons.restaurant, 'Restaurant'),
-                _buildFacilityIcon(Icons.local_parking, 'Parking'),
-                _buildFacilityIcon(Icons.meeting_room, 'Meeting Room'),
-                _buildFacilityIcon(Icons.elevator, 'Elevator'),
-                _buildFacilityIcon(Icons.fitness_center, 'Fitness Center'),
-                _buildFacilityIcon(Icons.access_time, '24-hours Open'),
+                _buildKeyInfoRow(
+                    Icons.location_on, 'Location', widget.activity.location),
+                _buildKeyInfoRow(Icons.person, 'Max Participants',
+                    '${widget.activity.maxParticipants}'),
+                _buildKeyInfoRow(Icons.people, 'Current Participants',
+                    '${widget.activity.currentParticipants}'),
               ],
             ),
             SizedBox(height: 20),
 
-            // Activity Price and Book Now Button
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -167,16 +153,14 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    // Navigate to the Reservation Page and pass userId and activityId
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ReservationPage(
-                          userId: userId, // Pass the userId from provider
+                          userId: userId,
                           activityId: widget.activity.id,
                           activityPrice: widget.activity.price,
-                          activity:
-                              widget.activity, // Pass the activity details
+                          activity: widget.activity,
                         ),
                       ),
                     );
@@ -201,16 +185,19 @@ class _ActivityDetailsScreenState extends State<ActivityDetailsScreen> {
     );
   }
 
-  // Widget for building facility icon and text
-  Widget _buildFacilityIcon(IconData icon, String label) {
-    return Column(
+  // Widget for displaying key information rows
+  Widget _buildKeyInfoRow(IconData icon, String label, String info) {
+    return Row(
       children: [
-        Icon(icon, size: 30, color: Colors.green),
-        SizedBox(height: 5),
+        Icon(icon, size: 24, color: Colors.blueAccent),
+        SizedBox(width: 10),
         Text(
-          label,
-          style: TextStyle(fontSize: 12),
-          textAlign: TextAlign.center,
+          '$label: ',
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+        ),
+        Text(
+          info,
+          style: TextStyle(fontSize: 16),
         ),
       ],
     );
